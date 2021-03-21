@@ -11,6 +11,7 @@ before_install:
 script:
   - docker run -e CI=true react-test npm run test 
 
+#after successfull test
 after_success:
   - docker build -t multi-client ./client
   - docker build -t multi-nginx ./nginx
