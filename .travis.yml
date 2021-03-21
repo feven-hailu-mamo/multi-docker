@@ -1,0 +1,25 @@
+language: generic 
+sudo: required
+services:
+  - docker
+
+#set of commands to be executed before the test runs
+before_install:
+  - docker build -t react-test -f ./client/Dockerfile.dev ./client
+
+#script section contains all the commands that needs to be executed
+script:
+  - docker run -e CI=true react-test npm run test 
+
+after_success:
+  - docker build -t multi-client ./client
+  - docker build -t multi-nginx ./nginx
+  - docker build -t multi-server ./server
+  - docker build -t multi-worker ./worker
+#Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "DOCKER_ID" --password-stdin
+# Take those images and push them to docker hub
+docker push multi-client
+docker push multi-nginx
+docker push multi-server
+docker push multi-worker
