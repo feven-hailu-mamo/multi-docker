@@ -5,30 +5,25 @@ services:
 
 #set of commands to be executed before the test runs
 before_install:
-  - docker build -t react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t feven2020/react-test -f ./client/Dockerfile.dev ./client
 
 #script section contains all the commands that needs to be executed
 script:
-  - docker run -e CI=true react-test npm test 
+  - docker run -e CI=true feven2020/react-test npm test 
 
 #after successfull test
-#after_success:
-  - docker build -t multi-client ./client
-  - docker build -t multi-nginx ./nginx
-  - docker build -t multi-server ./server
-  - docker build -t multi-worker ./worker
+after_success:
+  - docker build -t feven2020/multi-client ./client
+  - docker build -t feven2020/multi-nginx ./nginx
+  - docker build -t feven2020/multi-server ./server
+  - docker build -t feven2020/multi-worker ./worker
 #Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 # Take those images and push them to docker hub
-# - docker push multi-client
-# - docker push multi-nginx
-# - docker push multi-server
-# - docker push multi-worker
+  - docker push feven2020/multi-client
+  - docker push feven2020/multi-nginx
+  - docker push feven2020/multi-server
+  - docker push feven2020/multi-worker
 
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
 
     
